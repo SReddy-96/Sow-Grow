@@ -1,8 +1,8 @@
 databases:
-  - name: SowAndGrowedb
+  - name: SowAndGrowdb
     plan: free
-    databaseName: mSowAndGrow
-    user: mSowAndGrow
+    databaseName: SowAndGrow
+    user: SowAndGrow
 
 services:
   - type: web

@@ -1,0 +1,56 @@
+{% extends 'app/layout.html' %}
+
+{% block title %}
+{{plant.name}}
+{% endblock %}
+
+{% block body %}
+
+
+<div class="container text-center pb-4">
+    <div class="card shadow-sm mx-auto w-75">
+        <h1 class="card-header">&#127793; {{ plant.name }} &#127793;</h1>
+        <div class="card-body">
+            <form method="post" id="plantProfileForm" action="{% url 'plantProfile' plant.id %}">
+                {% csrf_token %}
+
+                <!-- plant form Div -->
+                <div id="plantFormDiv">
+                    <h4 class="card-title my-4">Plant</h4>
+                    {{ plantForm.as_p }}
+                </div>
+
+                <!-- sowing form Div -->
+                <div id="sowingFormDiv">
+                    <h4 class="card-title my-4">Sowing</h4>
+                    {{ sowingForm.as_p }}
+                </div>
+
+                <!-- harvest form div -->
+                <div id="harvestFormDiv">
+                    <h4 class="card-title my-4">Harvesting</h4>
+                    {{harvestForm.as_p}}
+                </div>
+
+                <!-- tending for div -->
+                <div id="tendingFormDiv">
+                    <h4 class="card-title my-4">Tending</h4>
+                    {{tendingForm.as_p}}
+                </div>
+                <input type="submit" class="btn btn-primary" name="updateForm" value="Update">
+                <input type="submit" value="Delete" class="btn btn-danger" name="deletePlant">
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block script %}
+<script>
+
+
+</script>
+
+{% endblock %}

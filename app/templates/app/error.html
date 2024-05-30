@@ -1,0 +1,11 @@
+{% extends "app/layout.html" %}
+
+{% block title %}
+    Error
+{% endblock%}
+
+{% block body %}
+    <h1>Error code: {{ code }}</h1>
+
+    <h3>{{ message }}</h3>
+{% endblock %}

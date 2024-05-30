@@ -1,0 +1,70 @@
+body {
+    font-family: "Plus Jakarta Sans", sans-serif !important;
+}
+
+.navbar {
+    background-color: hsla(120, 100%, 98%) !important;
+}
+
+#HomeImage {
+    background-image: url('./images/homeImage4.webp');
+    background-size: cover;
+    background-position: center;
+    height: 83vh;
+    margin: -2rem;
+    color: #f6fdfe;
+}
+
+#HomeTitle {
+    font-size: 7rem;
+    font-weight: 900;
+}
+
+.homePageText {
+    text-shadow: 0 0.3rem 0.1rem rgba(0, 0, 0, 0.5);
+}
+
+.bodyBlock {
+    padding: 2rem;
+    height: 100%;
+}
+
+label [for$="id_name"]::before,
+[for$="id_start_sowing_month"]::before,
+[for$="id_end_sowing_month"]::before,
+[for$="id_start_harvest_month"]::before,
+[for$="id_end_harvest_month"]::before,
+[for$="id_depth_cm"]::before,
+[for$="id_spacing_cm"]::before,
+[for$="id_row_spacing_cm"]::before,
+[for$="id_light_requirements"]::before,
+[for$="id_water_requirements"]::before,
+[for$="id_fertilizer_needs"]::before {
+    content: ' *' !important;
+    color: red;
+}
+
+/* to get rid of row borders */
+.table>tbody>tr>td {
+    border-bottom: none;
+}
+
+#lastTableSpacer {
+    border-bottom: 1px solid #dee2e6;
+}
+
+/* give year plant names a pointer for modal */
+#year_plant_name:hover {
+    cursor: pointer;
+}
+
+/* add color to headers */
+.accordion-button,
+.card-header,
+.modal-header {
+    background-color: hsla(120, 100%, 90%, 0.8) !important;
+}
+
+ol {
+    list-style-position: inside;
+}

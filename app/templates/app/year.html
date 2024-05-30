@@ -1,0 +1,488 @@
+{% extends 'app/layout.html' %}
+
+{% block title %}
+{{current_year.year}}
+{% endblock %}
+
+{% block body %}
+
+
+<div class="container text-center pb-5">
+    <div class="row row-cols-md-2 row-cols-1 mb-3">
+        <div class="col">
+            <h1 class="mb-3">{{current_year.year}}</h1>
+        </div>
+        <div class="col d-md-flex justify-content-end">
+
+            <!-- plant selection -->
+            <form class="mb-3" action="{% url 'year' current_year.id %}" method="post">
+                {% csrf_token %}
+                <select class="mt-2" name="plantSelector" id="plantSelector">
+                    <option disabled selected>Select Plant</option>
+                    {% for plant in plants %}
+                    <option value="{{plant.id}}">{{plant.name}}</option>
+                    {% endfor %}
+                </select>
+                <input class="btn btn-primary mt-2" type="submit" value="&#128932; Add Plant">
+            </form>
+
+
+        </div>
+    </div>
+
+    <!-- desktop view -->
+    <table class="table d-none d-md-table ">
+        <thead class="table-light">
+            <tr>
+                <th scope="col">Plant</th>
+                {% for mont_number, month_name in months %}
+                <th scope="col">{{ month_name }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% if not plants_data %}
+            <tr>
+                <th scope="row"></th>
+                <td colspan="12" id="lastTableSpacer">No Plants added to Year</td>
+            </tr>
+            {% else %}
+            {% for data in plants_data %}
+
+            <!-- spacer -->
+            <tr class="p-3">
+                <th scope="row" rowspan="7" class="align-middle" id="year_plant_name" data-bs-toggle="modal"
+                    data-bs-target="#modalPlant-{{data.plant.id}}">{{ data.plant.name }}</th>
+                <td colspan="12"></td>
+            </tr>
+
+            <!-- Modal for desktop -->
+            <div class="modal fade" id="modalPlant-{{data.plant.id}}" tabindex="-1" aria-labelledby="view plant data"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5">{{data.plant.name}}</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+
+                            <!-- data -->
+                            <div class="row row-cols-3 mb-3">
+                                <div class="col">
+                                    <button class="btn btn-outline-success" data-bs-target="#sowing-{{data.sowing.id}}"
+                                        data-bs-toggle="modal">Sowing</button>
+                                </div>
+                                <div class="col">
+                                    <button class="btn btn-outline-success"
+                                        data-bs-target="#tending-{{data.tending.id}}"
+                                        data-bs-toggle="modal">Tending</button>
+                                </div>
+                                <div class="col">
+                                    <button class="btn btn-outline-success"
+                                        data-bs-target="#harvest-{{data.harvest.id}}"
+                                        data-bs-toggle="modal">Harvest</button>
+                                </div>
+                            </div>
+
+
+                            <!-- sowed -->
+                            <p class="Sowed">
+                                <span class="fw-bold">Sowed: </span><span
+                                    class="SowedText">{{data.planting_year.sowed}}</span>
+                                <span>
+                                    <button class="btn btn-warning btn-sm editSowedButton" type="button"
+                                        data-current-year-id="{{current_year.id}}"
+                                        data-plant-id="{{data.plant.id}}">Add/Edit</button>
+                                </span>
+                                <span style="display: none" class="SowedInput">
+                                    <form action="{% url 'addActions' current_year.id data.plant.id %}" method="post">
+                                        {% csrf_token %}
+                                        {{planting_year_form.sowed}}
+                                        <input type="submit" class="btn btn-primary btn-sm" value="Submit" name="Sowed">
+                                    </form>
+                                </span>
+                            </p>
+
+
+
+                            <!-- Transferred -->
+                            <p class="Transferred">
+                                <span class="fw-bold">Transferred: </span><span
+                                    class="TransferredText">{{data.planting_year.transferred}}</span>
+                                <span>
+                                    <button class="btn btn-warning btn-sm editTransferredButton" type="button"
+                                        data-current-year-id="{{current_year.id}}"
+                                        data-plant-id="{{data.plant.id}}">Add/Edit</button>
+                                </span>
+                                <span style="display: none" class="TransferredInput">
+                                    <form action="{% url 'addActions' current_year.id data.plant.id %}" method="post">
+                                        {% csrf_token %}
+                                        {{planting_year_form.transferred}}
+                                        <input type="submit" class="btn btn-primary btn-sm" value="Submit"
+                                            name="Transferred">
+                                    </form>
+                                </span>
+                            </p>
+
+
+                            <!-- Harvested -->
+                            <p class="Harvested">
+                                <span class="fw-bold">harvested: </span><span
+                                    class="HarvestedText">{{data.planting_year.harvested}}</span>
+                                <span>
+                                    <button class="btn btn-warning btn-sm editHarvestedButton" type="button"
+                                        data-current-year-id="{{current_year.id}}"
+                                        data-plant-id="{{data.plant.id}}">Add/Edit</button>
+                                </span>
+                                <span style="display: none" class="HarvestedInput">
+                                    <form action="{% url 'addActions' current_year.id data.plant.id %}" method="post">
+                                        {% csrf_token %}
+                                        {{planting_year_form.harvested}}
+                                        <input type="submit" class="btn btn-primary btn-sm" value="Submit"
+                                            name="Harvested">
+                                    </form>
+                                </span>
+                            </p>
+
+                        </div>
+
+                        <div class="modal-footer d-flex justify-content-between">
+
+                            <!-- review button -->
+                            {% if data.planting_year.harvested %}
+                            <button class="btn btn-primary" data-bs-target="#reviewPlant-{{data.planting_year.id}}"
+                                data-bs-toggle="modal">Ready to Review</button>
+                            {% endif %}
+
+                            <form action="{% url 'delete_plant_from_year' current_year.id data.plant.id %}"
+                                method="post">
+                                {% csrf_token %}
+                                <input type="submit" class="btn btn-danger" value="Delete" name="deletePlantFromYear">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- second modal for reviewing the plant for that year -->
+            <div class="modal fade" id="reviewPlant-{{data.planting_year.id}}" aria-hidden="true"
+                aria-labelledby="reviewPlant-{{data.planting_year.id}}" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5">{{ data.plant.name }} review for
+                                {{current_year.year}}</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{% url 'reviewPlantYear' current_year.id data.plant.id %}" method="post">
+                                {% csrf_token %}
+                                {{ data.year_review_form.as_p }}
+                                <input class="btn btn-primary" type="submit" value="Submit">
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" data-bs-target="#modalPlant-{{data.plant.id}}"
+                                data-bs-toggle="modal">Back to first</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- sowing data modal -->
+            <div class="modal fade" id="sowing-{{data.sowing.id}}" aria-hidden="true"
+                aria-labelledby="sowing-{{data.sowing.id}}" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5">Sowing data for {{ data.plant.name }}</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p><span class="fw-bold">Method: </span>{{data.sowing.get_method_display}}</p>
+                            <p><span class="fw-bold">Depth cm: </span>{{data.sowing.depth_cm}}</p>
+                            <p><span class="fw-bold">Spacing cm: </span>{{data.sowing.spacing_cm}}</p>
+                            <p><span class="fw-bold">Row Spacing cm: </span>{{data.sowing.row_spacing_cm}}</p>
+                            <p><span class="fw-bold">Sowing Comments: </span>{{data.sowing.sowing_comments}}</p>
+                        </div>
+                        <div class="modal-footer d-flex justify-content-start">
+                            <button class="btn btn-primary" data-bs-target="#modalPlant-{{data.plant.id}}"
+                                data-bs-toggle="modal">Back to first</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- tending data modal -->
+            <div class="modal fade" id="tending-{{data.tending.id}}" aria-hidden="true"
+                aria-labelledby="tending-{{data.tending.id}}" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5">Tending data for {{ data.plant.name }}</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p><span class="fw-bold">Light Requirements:
+                                </span>{{data.tending.get_light_requirements_display}}</p>
+                            <p><span class="fw-bold">Water Requirements:
+                                </span>{{data.tending.get_water_requirements_display}}</p>
+                            <p><span class="fw-bold">Fertilizer Needs:
+                                </span>{{data.tending.get_fertilizer_needs_display}}</p>
+                            <p><span class="fw-bold">Pest Control: </span>{{data.tending.pest_control}}</p>
+                            <p><span class="fw-bold">Disease Control: </span>{{data.tending.disease_control}}</p>
+                            <p><span class="fw-bold">Thinning: </span>{{data.tending.thinning|yesno:"Yes,No"}}</p>
+                        </div>
+                        <div class="modal-footer d-flex justify-content-start">
+                            <button class="btn btn-primary" data-bs-target="#modalPlant-{{data.plant.id}}"
+                                data-bs-toggle="modal">Back to first</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- harvest data modal -->
+            <div class="modal fade" id="harvest-{{data.harvest.id}}" aria-hidden="true"
+                aria-labelledby="harvest-{{data.harvest.id}}" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5">Harvest data for {{ data.plant.name }}</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p><span class="fw-bold">Cut And Grow: </span>{{data.harvest.cut_and_grow|yesno:"Yes,No"}}
+                            </p>
+                            <p><span class="fw-bold">Harvest Comments: </span>{{data.harvest.sowing_comments}}</p>
+                        </div>
+                        <div class="modal-footer d-flex justify-content-start">
+                            <button class="btn btn-primary" data-bs-target="#modalPlant-{{data.plant.id}}"
+                                data-bs-toggle="modal">Back to first</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <tr>
+                <!-- sowing -->
+                {% for month_number, month_name in months %}
+                {% if data.sowing and month_number == data.sowing.start_sowing_month %}
+                <td class="rounded" style="text-align: center; background-color: rgba(95, 255, 95, 0.699);"
+                    colspan="{{ data.sowing_colspan }}">
+                    Sow
+                </td>
+                {% elif month_number != 0 and month_number not in data.sowing_month_numbers %}
+                <td></td>
+                {% endif %}
+                {% endfor %}
+            </tr>
+
+            <!-- spacer -->
+            <tr class="p-3">
+                <td colspan="12"></td>
+            </tr>
+
+            <!-- transfer only display if method is Indirect sowing so they need to be transferred -->
+            <tr>
+                {% if data.sowing.method == 'IS' %}
+                {% for month_number, month_name in months %}
+                {% if data.tending and month_number == data.tending.start_transfer_month %}
+                <td class="rounded" style="text-align: center; background-color: rgba(247, 69, 69, 0.719);"
+                    colspan="{{ data.tending_colspan }}">
+                    Transfer
+                </td>
+                {% elif month_number != 0 and month_number not in data.tending_month_numbers%}
+                <td></td>
+                {% endif %}
+                {% endfor %}
+                {% endif %}
+            </tr>
+
+            <!-- spacer -->
+            <tr class="p-3">
+                <td colspan="12"></td>
+            </tr>
+
+            <!-- harvest -->
+            <tr>
+                {% for month_number, month_name in months %}
+                {% if data.harvest and month_number == data.harvest.start_harvest_month %}
+                <td class="rounded" style="text-align: center; background-color:rgba(30, 45, 255, 0.699);"
+                    colspan="{{ data.harvest_colspan }}">
+                    Harvest
+                </td>
+                {% elif month_number != 0 and month_number not in data.harvest_month_numbers %}
+                <td></td>
+                {% endif %}
+                {% endfor %}
+            </tr>
+
+            <!-- spacer between plants-->
+            <tr class="p-3" id="lastTableSpacer">
+                <td colspan="12"></td>
+            </tr>
+
+            {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+
+    <!-- Mobile View -->
+
+    {% if not plants_data %}
+    <div class="card d-block d-md-none">
+        <div class="card-title fw-bold m-3"> No Plants added to Year</div>
+    </div>
+    {% else %}
+    <div class="row row-cols-2 g-4 mb-4 d-flex d-md-none">
+        {% for month_number, month_name in months %}
+        <div class="col">
+            <div class="card d-block d-md-none">
+                <div class="card-header" id="month-{{month_number}}">{{ month_name }}</div>
+                <div class="card-body">
+                    {% for data in plants_data %}
+
+                    <!-- sowing -->
+                    {% if data.sowing %}
+                    {% if month_number in data.sowing_month_numbers %}
+                    <div id="year_plant_name" data-bs-toggle="modal" data-bs-target="#modalPlant-{{data.plant.id}}"
+                        class="mb-2" style="background-color: rgba(95, 255, 95, 0.699);">{{data.plant.name}}</div>
+                    {% endif %}
+                    {% endif %}
+
+                    <!-- tending -->
+                    {% if data.sowing.method == 'IS' and data.tending %}
+                    {% if month_number in data.tending_month_numbers %}
+                    <div id="year_plant_name" data-bs-toggle="modal" data-bs-target="#modalPlant-{{data.plant.id}}"
+                        class="mb-2" style="background-color: rgba(247, 69, 69, 0.719);">{{data.plant.name}}</div>
+                    {% endif %}
+                    {% endif %}
+
+                    <!-- harvest -->
+                    {% if data.harvest %}
+                    {% if month_number in data.harvest_month_numbers %}
+                    <div id="year_plant_name" data-bs-toggle="modal" data-bs-target="#modalPlant-{{data.plant.id}}"
+                        class="mb-2" style="background-color: rgba(30, 45, 255, 0.699);">{{data.plant.name}}</div>
+                    {% endif %}
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+
+    <!-- key for mobile version -->
+    <div class="card d-block d-md-none">
+        <div class="card-header">&#127793; Plant Key &#127793;</div>
+        <div class="card-body d-flex justify-content-evenly">
+            <div class="p-2" style="background-color: rgba(95, 255, 95, 0.699);">Sow</div>
+            <div class="p-2" style="background-color: rgba(247, 69, 69, 0.719);">Transfer</div>
+            <div class="p-2" style="background-color: rgba(30, 45, 255, 0.699);">Harvest</div>
+        </div>
+    </div>
+    {% endif %}
+
+
+    <!-- Delete Year -->
+    <div class="my-3">
+        <button class="btn btn-outline-danger" data-bs-target="#deleteYear-{{current_year.id}}"
+            data-bs-toggle="modal">Delete Year</button>
+    </div>
+
+
+    <!-- modal for checking delete whole year -->
+    <div class="modal fade" id="deleteYear-{{current_year.id}}" aria-hidden="true"
+        aria-labelledby="deleteYear-{{current_year.id}}" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Delete Entire Year</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are sure you want to Delete the Entire Year?</p>
+                </div>
+                <div class="modal-footer d-flex justify-content-center">
+                    <form action="{% url 'deleteEntireYear' current_year.id %}" method="post">
+                        {% csrf_token %}
+                        <input type="submit" class="btn btn-danger" value="Permanently Delete" name="deleteEntireYear">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block script %}
+<script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+        sowedButtons = document.querySelectorAll('.editSowedButton');
+        transferredButtons = document.querySelectorAll('.editTransferredButton');
+        harvestedButtons = document.querySelectorAll('.editHarvestedButton');
+
+        Sowed = "Sowed"
+        Transferred = "Transferred"
+        Harvested = "Harvested"
+
+
+        textToInput(sowedButtons, Sowed)
+        textToInput(transferredButtons, Transferred)
+        textToInput(harvestedButtons, Harvested)
+
+        inputToText(Sowed)
+        inputToText(Transferred)
+        inputToText(Harvested)
+
+    })
+
+    function textToInput(editButtons, action) {
+        editButtons.forEach((editButton) => {
+            editButton.addEventListener('click', function () {
+                const actionModal = editButton.closest(`.${action}`);
+                const actionInput = actionModal.querySelector(`.${action}Input`);
+                const actionText = actionModal.querySelector(`.${action}Text`);
+
+                actionInput.style.display = 'inline-block';
+                actionText.style.display = 'none';
+                editButton.style.display = 'none';
+            })
+        })
+    }
+
+    function inputToText(action) {
+        const plant_name_buttons = document.querySelectorAll('#year_plant_name')
+        plant_name_buttons.forEach((plant_name_button) => {
+            plant_name_button.addEventListener('click', function () {
+                const plant_modal_id = plant_name_button.dataset.bsTarget.slice(1);
+                const modal = document.getElementById(plant_modal_id);
+
+                // get the button, input and text from this certain modal
+                const actionButton = modal.querySelector(`.edit${action}Button`);
+                const actionInput = modal.querySelector(`.${action}Input`);
+                const actionText = modal.querySelector(`.${action}Text`);
+
+                // show the text and button and not the form 
+                actionInput.style.display = 'none';
+                actionText.style.display = 'inline-block';
+                actionButton.style.display = 'inline-block';
+            })
+
+        })
+    }
+
+
+
+
+
+
+</script>
+
+{% endblock %}

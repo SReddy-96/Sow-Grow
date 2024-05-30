@@ -1,0 +1,42 @@
+{% extends "app/layout.html" %}
+
+{% load static %}
+
+{% block title %}
+Login
+{% endblock%}
+
+{% block body %}
+<div class="container d-flex justify-content-center mt-5">
+    <div class="card m-auto shadow pe-md-3">
+        <div class="row">
+            <div class="container col-md-7">
+                <img src="{% static 'app/images/holdingSeedling.webp' %}" alt="nurturing seedling"
+                    class="rounded image-fluid w-100 h-100">
+            </div>
+            <div class="container col-md-5 text-center">
+                <h2 class="card-title my-2">Login</h2>
+
+                {% if message %}
+                <div>{{ message }}</div>
+                {% endif %}
+                <div class="card-body">
+                    <form action="{% url 'login' %}" method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <input autofocus class="form-control mb-3" type="text" name="username"
+                                placeholder="Username">
+                        </div>
+                        <div class="form-group">
+                            <input class="form-control mb-3" type="password" name="password" placeholder="Password">
+                        </div>
+                        <input class="btn btn-primary mb-3 w-100" type="submit" value="Login">
+                    </form>
+
+                    Don't have an account? <a href="{% url 'register' %}">Register here.</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

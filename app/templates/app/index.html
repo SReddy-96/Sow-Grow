@@ -1,0 +1,90 @@
+{% extends 'app/layout.html' %}
+
+{% load static %}
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block body %}
+<!-- image and title -->
+<div id="HomeImage" alt="Image of seedling">
+    <div class="homePageText ps-4 pt-3">
+        <h1 id="HomeTitle" class="ps-3 pe-3 pt-4 ">Sow & Grow</h1>
+        <p class="fs-2 fw-bold">"Plan Your Garden for Success”</p>
+    </div>
+</div>
+
+<!-- summary card -->
+<div class="container">
+    <div class="card p-2 shadow text-center mb-3" style="background-color: hsla(120, 100%, 98%)">
+        <div class="card-title fw-bold mt-1">&#127793; What is Sow & Grow? &#127793;</div>
+        <div class="card-body">
+            Sow & Grow is the gardener's best friend. Easily add your plants and key details, then let the app create a
+            personalized year planner. See at a glance when to sow, water, and care for each plant throughout the
+            seasons. No more guesswork - Sow & Grow keeps your green thumb on track.
+        </div>
+    </div>
+
+    <h2 class="text-center mt-5">How it all works?</h2>
+    <hr class="mx-4 mb-3">
+
+    <!-- how it works -->
+    <div class="container d-flex flex-column justify-content-center mt-5">
+
+        <div class="card mx-auto mb-5 pe-md-3 border-light" style="max-width: 55rem;">
+            <div class="row">
+                <div class="container col-md-6">
+                    <img src="{% static 'app/images/AddAPlant.webp' %}" alt="nurturing seedling"
+                        class="border image-fluid w-100 h-auto">
+                </div>
+                <div class="container col-md-6 text-center">
+                    <h4 class="card-title mt-3">Add a Plant</h4>
+                    <div class="card-body lh-sm">
+                        First, you'll want to add a plant, inputting data like sowing months, light requirements,
+                        disease control, and much more. Once submitted to the database, this information becomes
+                        accessible for the next step.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mx-auto mb-5 pe-md-3 border-light" style="max-width: 55rem;">
+            <div class="row">
+                <div class="container col-md-6 order-md-2">
+                    <img src="{% static 'app/images/AddAYear.webp' %}" alt="nurturing seedling"
+                        class="image-fluid w-100 h-auto border">
+                </div>
+                <div class="container col-md-6 text-center order-md-1">
+                    <h4 class="card-title mt-3">Add a Year</h4>
+                    <div class="card-body lh-sm">
+                        Next, you'll want to create a new year. This is where the magic happens. Here, you can add your
+                        plants for the year, and the app will display all the relevant data in an easy-to-read,
+                        calendar-style format.
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="card mx-auto mb-5 pe-md-3 border-light" style="max-width: 55rem;">
+            <div class="row">
+                <div class="container col-md-6">
+                    <img src="{% static 'app/images/AddAReview.webp' %}" alt="nurturing seedling"
+                        class="border image-fluid w-100 h-auto">
+                </div>
+                <div class="container col-md-6 text-center">
+                    <h4 class="card-title mt-3">Add a Review</h4>
+                    <div class="card-body lh-sm">
+                        Lastly, as you sow, transfer, and harvest your plants, you can input the corresponding dates to
+                        keep track of the year's growth cycle. This allows you to review each plant individually, making
+                        it easier to plan and improve your gardening efforts year after year.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

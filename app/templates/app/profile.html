@@ -1,0 +1,141 @@
+{% extends 'app/layout.html' %}
+
+{% block title %}
+Profile
+{% endblock %}
+
+{% block body %}
+
+<h1 class="text-center mb-3">Profile</h1>
+<div class="row">
+
+    <!-- profile container -->
+    <div class="col-md-6 col-12 mb-3">
+        <div class="card p-3 shadow">
+            <h2 class="card-title text-center">{{current_user.username}}</h2>
+            <div class="card-body">
+                <p><span class="fw-bold">Gardener's ID:</span> {{current_user.id}}</p>
+                <p><span class="fw-bold">Email:</span> {{current_user.email}}</p>
+                <p><span class="fw-bold">Member Since:</span> {{current_user.date_joined}}</p>
+            </div>
+        </div>
+
+        <h3 class="text-center my-3">Year Reviews</h3>
+        <hr class="mx-4 mb-3">
+
+        <!-- if user has no year reviews -->
+        {% if not user_years %}
+        <div class="card text-center shadow">
+            <h2 class="card-header">No Plant Reviews</h2>
+            <div class="card-body">
+                <p>Go to <a href="{% url 'addAYear' %}">Add Year</a> to add your first Year</p>
+            </div>
+        </div>
+        {% else %}
+
+        <!-- year reviews -->
+        {% for user_year in user_years %}
+        <div class="accordion" id="year-parent-{{user_year.id}}">
+            <div class="accodrion-item text-center shadow mb-3">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed " type="button" data-bs-toggle="collapse"
+                        data-bs-target="#year-{{user_year.id}}" aria-expanded="false" aria-controls="collapseOne">
+                        {{user_year.year}}
+                    </button>
+                </h2>
+                <div id="year-{{user_year.id}}" class="accordion-collapse collapse p-3"
+                    data-bs-parent="#year-parent-{{user_year.id}}">
+                    <div class="accoridon-body ">
+                       {% for plant_review in user_year.year_reviews.all %}
+                        <p class="mb-0"><span class="fw-bold">{{plant_review.plant.name}}: </span>
+                            {{plant_review.yield_amount}}Kg</p>
+                        <p class="">{{plant_review.review_comments}}</p>
+
+                        <div class="row row-cols-md-3 row-cols-1">
+                            {% for user_plants_action in user_plants_actions %}
+                            {% if user_plants_action.plant == plant_review.plant and user_plants_action.year == plant_review.year %}
+                            <div class="cols"><span class="fw-bold">Sowed: </span>{{user_plants_action.sowed|date:"F d"}}
+                            </div>
+                            <div class="cols"><span class="fw-bold">Transferred:
+                                </span>{{user_plants_action.transferred|date:"F d"}}</div>
+                            <div class="cols"><span class="fw-bold">Harvested:
+                                </span>{{user_plants_action.harvested|date:"F d"}}</div>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+
+                        <hr class="mx-4 mb-3">
+
+                        {% empty %}
+                        <p>No plant reviews for this year</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+
+
+
+    <!-- displays the users plants -->
+    <div class="col-md-6 col-12 mb-3">
+
+        <h2 class="text-center mb-3">Plants</h2>
+        <hr class="mx-4 mb-3">
+
+        <!-- to display if the user has no plants -->
+        {% if not plants %}
+        <div class="card text-center shadow">
+            <h2 class="card-header">No Plants</h2>
+            <div class="card-body">
+                <p>Go to <a href="{% url 'addPlant' %}">Add Plant</a> to add your first plant.</p>
+            </div>
+        </div>
+
+        {% else %}
+
+        <!-- display 2 per row then 1 per row when medium -->
+        <div class="row row-cols-md-2 row-cols-1 g-4">
+
+            {% for plant in plants %}
+            <div class="col">
+                <div class="card shadow-sm col-md-5 p-0 w-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h2 class="mb-0">{{plant.name}}</h2>
+                        <span>
+                            <a href="{% url 'plantProfile' plant.id %}">
+                                <!-- Bootstrap card icon  -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1.5rem" height="1.5rem"
+                                    fill="currentColor" class="bi bi-arrows-fullscreen text-success"
+                                    viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                        d="M5.828 10.172a.5.5 0 0 0-.707 0l-4.096 4.096V11.5a.5.5 0 0 0-1 0v3.975a.5.5 0 0 0 .5.5H4.5a.5.5 0 0 0 0-1H1.732l4.096-4.096a.5.5 0 0 0 0-.707m4.344 0a.5.5 0 0 1 .707 0l4.096 4.096V11.5a.5.5 0 1 1 1 0v3.975a.5.5 0 0 1-.5.5H11.5a.5.5 0 0 1 0-1h2.768l-4.096-4.096a.5.5 0 0 1 0-.707m0-4.344a.5.5 0 0 0 .707 0l4.096-4.096V4.5a.5.5 0 1 0 1 0V.525a.5.5 0 0 0-.5-.5H11.5a.5.5 0 0 0 0 1h2.768l-4.096 4.096a.5.5 0 0 0 0 .707m-4.344 0a.5.5 0 0 1-.707 0L1.025 1.732V4.5a.5.5 0 0 1-1 0V.525a.5.5 0 0 1 .5-.5H4.5a.5.5 0 0 1 0 1H1.732l4.096 4.096a.5.5 0 0 1 0 .707" />
+                                </svg>
+                            </a>
+                        </span>
+                    </div>
+                    <div class="card-body lh-1">
+                        <p><span class="fw-bold">Variety:</span> {{plant.variety}}</p>
+                        <p><span class="fw-bold">Category:</span> {{plant.category}}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+
+
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+
+
+</script>
+
+{% endblock %}

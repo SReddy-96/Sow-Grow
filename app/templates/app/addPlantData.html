@@ -1,0 +1,69 @@
+{% extends 'app/layout.html' %}
+
+{% block title %}
+Add Plant Data for {{plant.name}}
+{% endblock %}
+
+{% block body %}
+
+
+<div class="container text-center">
+    <div class="card shadow border-success m-auto w-75">
+        <h1 class="card-header border-success">&#129365; Add Plant Data for {{ plant.name }} &#129365;</h1>
+        <div class="card-body">
+            <form method="post" id="addPlantDataForm" action="{% url 'addPlantData' plant.id %}">
+                {% csrf_token %}
+
+                <!-- sowing form Div -->
+                <div style="display: block" id="sowingFormDiv">
+                    <h4 class="card-title mb-4">Sowing</h4>
+                    {{ sowingForm.as_p }}
+                    <input type="button" class="btn btn-primary" onclick="showHarvestForm()" value="Next  &#11166;">
+                </div>
+
+                <!-- harvest form div -->
+                <div style="display: none" id="harvestFormDiv">
+                    <h4 class="card-title mb-4">Harvesting</h4>
+                    {{harvestForm.as_p}}
+                    <input type="button" class="btn btn-primary" onclick="showSowingForm()" value="&#11164;  Back">
+                    <input type="button" class="btn btn-primary" onclick="showTendingForm()" value="Next  &#11166;">
+                </div>
+
+                <!-- tending for div -->
+                <div style="display: none" id="tendingFormDiv">
+                    <h4 class="card-title mb-4">Tending</h4>
+                    {{tendingForm.as_p}}
+                    <input type="button" class="btn btn-primary" onclick="showHarvestForm()" value="&#11164;  Back">
+                    <input type="submit" class="btn btn-primary" name="tendingForm" value="Submit">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block script %}
+<script>
+
+    // show harvest form
+    function showHarvestForm() {
+        document.getElementById('sowingFormDiv').style.display = 'none';
+        document.getElementById('harvestFormDiv').style.display = 'block';
+        document.getElementById('tendingFormDiv').style.display = 'none';
+    }
+
+    // show tending form
+    function showTendingForm() {
+        document.getElementById('harvestFormDiv').style.display = 'none';
+        document.getElementById('tendingFormDiv').style.display = 'block';
+    }
+
+    function showSowingForm(){
+        document.getElementById('harvestFormDiv').style.display = 'none';
+        document.getElementById('sowingFormDiv').style.display = 'block';
+    }
+</script>
+
+{% endblock %}

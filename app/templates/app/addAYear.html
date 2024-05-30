@@ -1,0 +1,33 @@
+{% extends 'app/layout.html' %}
+
+{% block title %}
+Add A Year
+{% endblock %}
+
+{% block body %}
+
+
+<div class="container text-center">
+    <div class="card border-success shadow m-auto w-75">
+        <h1 class="card-header border-success">&#128197; Add a Year &#128197;</h1>
+        <div class="card-body">
+            <form action="{% url 'addAYear' %}" method="post" id="yearForm">
+                {% csrf_token %}
+
+                {{yearForm.as_p}}
+                <input class="btn btn-primary" type="submit" value="Create">
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block script %}
+<script>
+
+
+</script>
+
+{% endblock %}

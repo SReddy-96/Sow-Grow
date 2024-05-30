@@ -196,7 +196,7 @@ It was more challenging than I anticipated, but with lots of research, I managed
 
 Clone the repository:
 ```
-git clone {github-url}
+git clone https://github.com/SReddy-96/Sow-and-Grow.git
 ```
 Navigate into directory:
 ```

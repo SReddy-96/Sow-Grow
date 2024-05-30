@@ -1,0 +1,22 @@
+databases:
+  - name: SowAndGrowedb
+    plan: free
+    databaseName: mSowAndGrow
+    user: mSowAndGrow
+
+services:
+  - type: web
+    plan: free
+    name: SowAndGrow
+    runtime: python
+    buildCommand: "./build.sh"
+    startCommand: "python -m gunicorn SowAndGrow.asgi:application -k uvicorn.workers.UvicornWorker"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: SowAndGrowdb
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: WEB_CONCURRENCY
+        value: 4

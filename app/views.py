@@ -126,6 +126,9 @@ def addPlantData(request, plant_id):
     plant = Plant.objects.get(pk=plant_id)
     # POST request
     if request.method == "POST":
+        if plant.user != request.user: # checking if the current_user matches the plant user 
+            return render_error(request, 'You cannot update this plant')
+        
         sowForm = SowForm(request.POST)
         tendingForm = TendingForm(request.POST)
         harvestForm = HarvestForm(request.POST)
@@ -261,6 +264,9 @@ def plantProfile(request, plant_id):
     current_tending = get_object_or_404(Tending, plant=current_plant)
 
     if request.method == 'POST':
+        if current_plant.user != request.user: # checking if the current_user matches the plant user 
+            return render_error(request, 'You cannot update this plant')
+        
         if 'updateForm' in request.POST:
             plantForm = PlantForm(request.POST, instance=current_plant)
             sowingForm = SowForm(request.POST, instance=current_sowing)
@@ -308,7 +314,6 @@ def plantProfile(request, plant_id):
 def AddAYear(request):
     current_user = request.user
     
-
     if request.method == 'POST':
         yearForm = UserYearForm(request.POST) 
 
@@ -341,6 +346,9 @@ def Year(request, year_id):
 
     # handling selection of plant for year
     if request.method == 'POST':
+        if current_year.user != request.user: # checking if the current_user matches the year user 
+            return render_error(request, 'You cannot update this year')
+        
         plant_id = request.POST.get('plantSelector')
         if plant_id:
             try:
@@ -431,6 +439,8 @@ def deletePlantYear(request, year_id, plant_id):
     if request.method == 'POST':
         plant = get_object_or_404(Plant, pk=plant_id)
         planting_year = get_object_or_404(UserYear, pk=year_id)
+        if plant.user != request.user: # checking if the current_user matches the plant user 
+            return render_error(request, 'You cannot delete this year')
 
         try:
             deleted_plant = PlantingYear.objects.get(user=request.user, year=planting_year, plant=plant)
@@ -450,6 +460,8 @@ def reviewPlantYear(request, year_id, plant_id):
         plant = get_object_or_404(Plant, pk=plant_id)
         planting_year = get_object_or_404(UserYear, pk=year_id)
         plant_review = YearReviewForm(request.POST) 
+        if plant.user != request.user: # checking if the current_user matches the plant user 
+            return render_error(request, 'You cannot update this plant')
 
         if plant_review.is_valid():
             yield_amount = plant_review.cleaned_data['yield_amount']
@@ -484,6 +496,9 @@ def addActions(request, year_id, plant_id):
         plant = get_object_or_404(Plant, pk=plant_id)
         planting_year = get_object_or_404(UserYear, pk=year_id)
         planting_actions = PlantingYearForm(request.POST) 
+        
+        if plant.user != request.user: # checking if the current_user matches the plant user 
+            return render_error(request, 'You cannot update this plant')
 
         if planting_actions.is_valid():
             sowed = planting_actions.cleaned_data['sowed']
